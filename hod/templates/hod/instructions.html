@@ -1,0 +1,40 @@
+{% extends "hod/base.html" %}
+
+{% block hod_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">System Instructions</h1>
+    <p class="text-muted">Guide to using the Hospital Stocktake System</p>
+</div>
+
+<div class="card p-6">
+    <div class="prose max-w-none">
+        <h2 class="text-xl font-semibold mb-2">Getting Started</h2>
+        <ol class="list-decimal pl-5 space-y-2">
+            <li>Import your department's drug list using the "Import Drugs" function</li>
+            <li>Create a new stocktake table when you need to record inventory</li>
+            <li>Share the access code with staff who will be counting inventory</li>
+        </ol>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Managing Stocktakes</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Each stocktake creates a snapshot of your inventory at a point in time</li>
+            <li>View previous stocktakes in the Reports section</li>
+            <li>Export data to Excel or CSV for further analysis</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Analyzing Data</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Use the Reports section to view trends over time</li>
+            <li>Visualize drug usage patterns with the interactive charts</li>
+            <li>Identify drugs that need reordering based on usage trends</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Tips</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Perform regular stocktakes for accurate data</li>
+            <li>Use consistent naming for stocktake tables (e.g., "Monthly - June 2023")</li>
+            <li>Review expiry dates regularly to minimize waste</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

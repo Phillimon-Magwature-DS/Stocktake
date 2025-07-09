@@ -1,0 +1,158 @@
+{% extends "hod/base.html" %}
+
+{% block hod_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <p class="text-muted">Welcome back, {{ user.username }} ({{ user.department }})</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="card p-6 rounded-lg">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">Active Stocktakes</h3>
+            <i class="fas fa-clipboard-list text-primary text-xl"></i>
+        </div>
+        <p class="text-3xl font-bold">{{ active_stocktakes }}</p>
+        <p class="text-sm text-muted mt-2">Currently active</p>
+    </div>
+    
+    <div class="card p-6 rounded-lg">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">Drugs in Database</h3>
+            <i class="fas fa-pills text-primary text-xl"></i>
+        </div>
+        <p class="text-3xl font-bold">{{ drug_count }}</p>
+        <p class="text-sm text-muted mt-2">Total drugs</p>
+    </div>
+    
+    <div class="card p-6 rounded-lg">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">Recent Activity</h3>
+            <i class="fas fa-history text-primary text-xl"></i>
+        </div>
+        <p class="text-3xl font-bold">{{ recent_stocktakes|length }}</p>
+        <p class="text-sm text-muted mt-2">recent stocktakes</p>
+    </div>
+</div>
+
+<div class="card p-6 rounded-lg mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Recent Stocktakes</h2>
+        <a href="{% url 'hod:stocktake_tables' %}" class="text-primary hover:underline">View All</a>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-3 px-4">Table Name</th>
+                    <th class="text-left py-3 px-4">Department</th>
+                    <th class="text-left py-3 px-4">Created</th>
+                    <th class="text-left py-3 px-4">Status</th>
+                    <th class="text-left py-3 px-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for table in recent_stocktakes %}
+                <tr class="border-b hover:bg-secondary">
+                    <td class="py-3 px-4">{{ table.name }}</td>
+                    <td class="py-3 px-4">{{ table.department.name }}</td>
+                    <td class="py-3 px-4">{{ table.created_at|date:"Y-m-d" }}</td>
+                    <td class="py-3 px-4">
+                        {% if table.is_active %}
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>
+                        {% else %}
+                        <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-3 px-4">
+                        <a href="{% url 'hod:export_stocktake' table.id %}?format=excel" 
+                           class="text-primary hover:underline mr-2" title="Export">
+                            <i class="fas fa-file-export"></i>
+                        </a>
+                        <a href="{% url 'hod:delete_stocktake' table.id %}" 
+                           class="text-red-500 hover:text-red-700 confirm-delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-4 text-center text-muted">No recent stocktakes found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <a href="{% url 'hod:new_stocktake' %}" class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas fa-plus-circle text-primary text-2xl mb-2"></i>
+                <p>New Stocktake</p>
+            </a>
+            <a href="{% url 'hod:import_drugs' %}" class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas fa-upload text-primary text-2xl mb-2"></i>
+                <p>Import Drugs</p>
+            </a>
+            <a href="#" class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas fa-file-export text-primary text-2xl mb-2"></i>
+                <p>Generate Report</p>
+            </a>
+            {% if user.is_superuser %}
+            <a href="#" class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas fa-user-plus text-primary text-2xl mb-2"></i>
+                <p>Add User</p>
+            </a>
+            {% endif %}
+            <a href="{% url 'hod:logout' %}" class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas fa-sign-out-alt text-primary text-2xl mb-2"></i>
+                <p>Logout</p>
+            </a>
+        </div>
+    </div>
+    
+    <div class="card p-6 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4">System Notifications</h2>
+        <div class="space-y-4">
+            {% if drug_count == 0 %}
+            <div class="flex items-start">
+                <div class="bg-yellow-100 text-yellow-800 p-2 rounded-full mr-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <p class="font-medium">No drugs in database</p>
+                    <p class="text-sm text-muted">Import drugs to get started</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="flex items-start">
+                <div class="bg-blue-100 text-blue-800 p-2 rounded-full mr-3">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div>
+                    <p class="font-medium">System is operational</p>
+                    <p class="text-sm text-muted">All systems normal</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Delete confirmation
+    const deleteButtons = document.querySelectorAll('.confirm-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this stocktake table? All records will be lost.')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

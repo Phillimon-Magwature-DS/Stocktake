@@ -1,0 +1,131 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-primary text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-hospital text-2xl"></i>
+                <h1 class="text-xl font-bold">Hospital Stocktake - HOD Portal</h1>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-primary-hover transition">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                {% if user.is_authenticated %}
+                <div class="dropdown relative">
+                    <button class="flex items-center space-x-2 focus:outline-none">
+                        <span>{{ user.username }}</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg hidden">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                        <a href="{% url 'hod:logout' %}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-grow">
+        <!-- Sidebar -->
+        {% if user.is_authenticated %}
+        <aside class="w-64 bg-secondary shadow-md">
+            <nav class="p-4">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-muted mb-2">Main Menu</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="{% url 'hod:home' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-home mr-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'hod:stocktake_tables' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-table mr-2"></i> Stocktake Tables
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'hod:drug_database' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-database mr-2"></i> Drug Database
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'hod:reports' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-file-export mr-2"></i> Reports
+                            </a>
+                        </li>
+                        {% if user.is_superuser %}
+                        <li>
+                            <a href="#" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-users-cog mr-2"></i> User Management
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'hod:instructions' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-book mr-2"></i> Instructions
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-muted mb-2">Quick Actions</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="{% url 'hod:new_stocktake' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-plus-circle mr-2"></i> New Stocktake
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'hod:import_drugs' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-upload mr-2"></i> Import Drugs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'hod:logout' %}" class="block py-2 px-3 rounded hover:bg-primary hover:text-white transition">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        {% endif %}
+
+        <!-- Content Area -->
+        <main class="flex-grow p-6">
+            {% block hod_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<script>
+    // Dropdown functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const button = dropdown.querySelector('button');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            button.addEventListener('click', function() {
+                menu.classList.toggle('hidden');
+            });
+            
+            // Close when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

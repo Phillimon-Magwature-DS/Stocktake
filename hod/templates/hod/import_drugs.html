@@ -1,0 +1,54 @@
+{% extends "hod/base.html" %}
+
+{% block hod_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Import Drugs</h1>
+    <p class="text-muted">Upload an Excel/CSV file to create or replace the drug database for a department</p>
+</div>
+
+<div class="card p-6 mb-8">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Department</label>
+                {{ form.department }}
+                {% if form.department.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.department.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Excel/CSV File</label>
+                {{ form.excel_file }}
+                {% if form.excel_file.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.excel_file.errors.0 }}</p>
+                {% endif %}
+                <p class="text-sm text-muted mt-1">File must contain a 'DRUG NAME' column</p>
+            </div>
+            
+            <div class="pt-2">
+                <button type="submit" class="btn-primary py-2 px-4 rounded-md font-medium">
+                    Import Drugs
+                </button>
+                <a href="{% url 'hod:drug_database' %}" class="ml-2 text-primary hover:underline">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="bg-yellow-100 border-l-4 border-yellow-500 p-4">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-circle text-yellow-500"></i>
+        </div>
+        <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+                <strong>Warning:</strong> Importing will replace all existing drugs for the selected department.
+                Make sure you have a backup if needed.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

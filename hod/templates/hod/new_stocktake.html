@@ -1,0 +1,68 @@
+{% extends "hod/base.html" %}
+
+{% block hod_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Create New Stocktake</h1>
+    <p class="text-muted">Create a new stocktake table for your department</p>
+</div>
+
+<div class="card p-6 mb-8">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Table Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+                <p class="text-sm text-muted mt-1">Descriptive name for this stocktake session</p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Department</label>
+                {{ form.department }}
+                {% if form.department.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.department.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-end space-x-2">
+                <div class="flex-grow">
+                    <label class="block text-sm font-medium mb-1">Access Code</label>
+                    {{ form.access_code }}
+                    {% if form.access_code.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.access_code.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-sm text-muted mt-1">Code that users will use to access this table</p>
+                </div>
+                <a href="?generate_code=true" class="btn-primary py-2 px-4 rounded-md font-medium whitespace-nowrap mb-1">
+                    Generate Code
+                </a>
+            </div>
+            
+            <div class="pt-2">
+                <button type="submit" class="btn-primary py-2 px-4 rounded-md font-medium">
+                    Create Stocktake
+                </button>
+                <a href="{% url 'hod:stocktake_tables' %}" class="ml-2 text-primary hover:underline">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="bg-blue-100 border-l-4 border-blue-500 p-4">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <i class="fas fa-info-circle text-blue-500"></i>
+        </div>
+        <div class="ml-3">
+            <p class="text-sm text-blue-700">
+                <strong>Note:</strong> This will create a new stocktake table with all drugs from your department's database.
+                Users will need the access code to enter stock counts.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

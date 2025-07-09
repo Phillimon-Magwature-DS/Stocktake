@@ -1,0 +1,104 @@
+{% extends "hod/base.html" %}
+
+{% block hod_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Drug Database</h1>
+    <p class="text-muted">Manage the master drug list for {{ user.department.name }}</p>
+</div>
+
+<div class="flex justify-between items-center mb-4">
+    <div class="flex space-x-2">
+        <a href="{% url 'hod:import_drugs' %}" class="btn-primary py-2 px-4 rounded-md font-medium">
+            <i class="fas fa-upload mr-2"></i> Import Drugs
+        </a>
+    </div>
+    
+    <div class="relative">
+        <input type="text" id="drug-search" placeholder="Search drugs..." 
+               class="pl-8 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+        <i class="fas fa-search absolute left-3 top-3 text-muted"></i>
+    </div>
+</div>
+
+<div class="card p-6 mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Add New Drug</h2>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex space-x-2">
+            <div class="flex-grow">
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn-primary py-2 px-4 rounded-md font-medium whitespace-nowrap">
+                Add Drug
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="card p-6">
+    <div class="overflow-x-auto">
+        <table class="min-w-full" id="drug-table">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-3 px-4">Drug Name</th>
+                    <th class="text-left py-3 px-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drug in drugs %}
+                <tr class="border-b hover:bg-secondary drug-row">
+                    <td class="py-3 px-4 drug-name">{{ drug.name }}</td>
+                    <td class="py-3 px-4">
+                        <a href="{% url 'hod:delete_drug' drug.id %}" 
+                           class="text-red-500 hover:text-red-700 mr-2 confirm-delete">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="py-4 text-center text-muted">No drugs found in database</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Drug search functionality
+    const searchInput = document.getElementById('drug-search');
+    const drugRows = document.querySelectorAll('.drug-row');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        drugRows.forEach(row => {
+            const drugName = row.querySelector('.drug-name').textContent.toLowerCase();
+            if (drugName.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Delete confirmation
+    const deleteButtons = document.querySelectorAll('.confirm-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this drug?')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
