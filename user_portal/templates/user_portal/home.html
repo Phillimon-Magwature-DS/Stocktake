@@ -1,0 +1,75 @@
+{% extends "user_portal/base.html" %}
+
+{% block user_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Staff Portal</h1>
+    {% if department %}
+    <p class="text-muted">Currently working in: {{ department.name }}</p>
+    {% else %}
+    <p class="text-muted">Please select your department to begin</p>
+    {% endif %}
+</div>
+
+{% if not department %}
+<div class="card p-6">
+    <h2 class="text-xl font-semibold mb-4">Select Department</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {% for dept in departments %}
+            <button type="submit" name="department" value="{{ dept.code }}" 
+                    class="p-4 border rounded-lg hover:bg-secondary transition text-center">
+                <i class="fas {{ dept.icon }} text-primary text-2xl mb-2"></i>
+                <p>{{ dept.name }}</p>
+            </button>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="card p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+            <div class="space-y-3">
+                <a href="{% url 'user_portal:access_stocktake' %}" 
+                   class="flex items-center p-3 border rounded-lg hover:bg-secondary transition">
+                    <i class="fas fa-clipboard-list text-primary text-xl mr-3"></i>
+                    <span>Start Stocktake</span>
+                </a>
+                <a href="{% url 'user_portal:view_tables' %}" 
+                   class="flex items-center p-3 border rounded-lg hover:bg-secondary transition">
+                    <i class="fas fa-table text-primary text-xl mr-3"></i>
+                    <span>View Stocktake Tables</span>
+                </a>
+                <a href="{% url 'user_portal:logout' %}" 
+                   class="flex items-center p-3 border rounded-lg hover:bg-secondary transition">
+                    <i class="fas fa-exchange-alt text-primary text-xl mr-3"></i>
+                    <span>Switch Department</span>
+                </a>
+            </div>
+        </div>
+        
+        <div>
+    <h2 class="text-xl font-semibold mb-4">Active Stocktakes</h2>
+    {% if active_tables %}
+    <div class="space-y-2">
+        {% for table in active_tables %}
+        <div class="p-3 border rounded-lg">
+            <h3 class="font-medium">{{ table.name }}</h3>
+            <p class="text-sm text-muted">Created: {{ table.created_at|date:"Y-m-d" }}</p>
+            <a href="{% url 'user_portal:access_stocktake' %}?access_code={{ table.access_code }}" 
+               class="inline-block mt-2 text-sm text-primary hover:underline">
+                Join this stocktake
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No active stocktakes for this department</p>
+    {% endif %}
+</div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

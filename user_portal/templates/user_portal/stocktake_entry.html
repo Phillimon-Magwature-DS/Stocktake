@@ -1,0 +1,119 @@
+{% extends "user_portal/base.html" %}
+
+{% block user_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Stocktake Entry</h1>
+    <p class="text-muted">{{ stocktake.name }} ({{ stocktake.department.name }})</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="card p-4">
+        <h3 class="font-semibold mb-1">Progress</h3>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="bg-primary h-2.5 rounded-full" style="width: {{ progress_percent }}%"></div>
+        </div>
+        <p class="text-sm text-muted mt-1">
+            {{ completed_items }} of {{ total_items }} items ({{ progress_percent }}%)
+        </p>
+    </div>
+    
+    <div class="card p-4">
+        <h3 class="font-semibold mb-1">Navigation</h3>
+        <div class="flex space-x-2">
+            <a href="{% url 'user_portal:view_tables' %}" class="btn-secondary py-1 px-3 text-sm rounded-md">
+                View Tables
+            </a>
+            <a href="{% url 'user_portal:home' %}" class="btn-secondary py-1 px-3 text-sm rounded-md">
+                Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card p-6 mb-6">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Drug Inventory</h2>
+        <div class="relative">
+            <input type="text" id="drug-search" placeholder="Search drugs..." 
+                   class="pl-8 pr-4 py-1 border rounded-md text-sm">
+            <i class="fas fa-search absolute left-3 top-2 text-muted"></i>
+        </div>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full" id="drug-table">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-3 px-4">Drug Name</th>
+                    <th class="text-left py-3 px-4">Current Count</th>
+                    <th class="text-left py-3 px-4">Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr class="border-b hover:bg-secondary drug-row">
+                    <td class="py-3 px-4 drug-name">{{ record.drug.name }}</td>
+                    <td class="py-3 px-4">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <label class="text-xs text-muted">Packs</label>
+                                <div class="font-medium">{{ record.packs }}</div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-muted">Singles</label>
+                                <div class="font-medium">{{ record.singles }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <form method="post" class="flex space-x-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="record_id" value="{{ record.id }}">
+                            
+                            <input type="number" name="packs" min="0" placeholder="Packs"
+                                   class="w-16 px-2 py-1 border rounded text-sm">
+                            
+                            <input type="number" name="singles" min="0" placeholder="Singles"
+                                   class="w-16 px-2 py-1 border rounded text-sm">
+                            
+                            <input type="text" name="expiry_date" placeholder="YYYY-MM-DD"
+                                   value="{{ record.expiry_date|default:'' }}"
+                                   class="w-24 px-2 py-1 border rounded text-sm">
+                            
+                            <button type="submit" name="update" 
+                                    class="bg-primary text-green px-2 py-1 rounded text-sm hover:bg-primary-dark">
+                                Update
+                            </button>
+                            <button type="submit" name="add" 
+                                    class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">
+                                Add
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('drug-search');
+    const drugRows = document.querySelectorAll('.drug-row');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        drugRows.forEach(row => {
+            const drugName = row.querySelector('.drug-name').textContent.toLowerCase();
+            if (drugName.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

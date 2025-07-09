@@ -1,0 +1,78 @@
+{% extends "user_portal/base.html" %}
+
+{% block user_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Stocktake Tables</h1>
+    <p class="text-muted">{{ department.name }}</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="card p-6">
+        <h2 class="text-xl font-semibold mb-4">Select Table</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <select name="table_id" class="w-full px-3 py-2 border rounded-md">
+                    <option value="">-- Select a table --</option>
+                    {% for table in tables %}
+                    <option value="{{ table.id }}" 
+                            {% if selected_table and selected_table.id == table.id %}selected{% endif %}>
+                        {{ table.name }} ({{ table.created_at|date:"Y-m-d" }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn-primary py-2 px-4 rounded-md">
+                View Table
+            </button>
+        </form>
+    </div>
+    
+    {% if selected_table %}
+    <div class="lg:col-span-2">
+        <div class="card p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">{{ selected_table.name }}</h2>
+                <div class="flex space-x-2">
+                    <a href="{% url 'user_portal:export_table' selected_table.id %}" 
+                       class="btn-secondary py-1 px-3 rounded-md text-sm">
+                        Export
+                    </a>
+                    <a href="{% url 'user_portal:stocktake_entry' %}" 
+                       class="btn-primary py-1 px-3 rounded-md text-sm">
+                        Back to Entry
+                    </a>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="text-left py-3 px-4">Drug Name</th>
+                            <th class="text-left py-3 px-4">Packs</th>
+                            <th class="text-left py-3 px-4">Singles</th>
+                            <th class="text-left py-3 px-4">Expiry</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr class="border-b hover:bg-secondary">
+                            <td class="py-3 px-4">{{ record.drug.name }}</td>
+                            <td class="py-3 px-4">{{ record.packs }}</td>
+                            <td class="py-3 px-4">{{ record.singles }}</td>
+                            <td class="py-3 px-4">{{ record.expiry_date|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="py-4 text-center text-muted">No records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

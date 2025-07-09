@@ -1,0 +1,40 @@
+{% extends "user_portal/base.html" %}
+
+{% block user_content %}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Staff Portal Help</h1>
+    <p class="text-muted">Instructions for using the stocktake system</p>
+</div>
+
+<div class="card p-6">
+    <div class="prose max-w-none">
+        <h2 class="text-xl font-semibold mb-2">Getting Started</h2>
+        <ol class="list-decimal pl-5 space-y-2">
+            <li>Select your department from the Home page</li>
+            <li>Get an access code from your HOD for the current stocktake</li>
+            <li>Enter the access code to start recording counts</li>
+        </ol>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Recording Counts</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li><strong>Update</strong>: Replaces the existing count with your new numbers</li>
+            <li><strong>Add</strong>: Adds your numbers to the existing count (use when multiple people are counting)</li>
+            <li>Enter expiry dates in YYYY-MM-DD format when known</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Viewing Data</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Use the "View Tables" page to see all stocktake data for your department</li>
+            <li>Export to Excel or CSV for further analysis</li>
+            <li>The progress indicator shows how much of the stocktake is complete</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold mt-6 mb-2">Troubleshooting</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Can't access a stocktake? Verify the access code with your HOD</li>
+            <li>Wrong department? Use "Switch Department" to change</li>
+            <li>Data not saving? Check your internet connection and try again</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
