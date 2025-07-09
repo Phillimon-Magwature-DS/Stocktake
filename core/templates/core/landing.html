@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center p-4">
+    <div class="card max-w-md w-full p-8 rounded-lg shadow-lg">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Corporate 24 Healthcare</h1>
+            <h2 class="text-xl text-muted">Hospital Stocktake System</h2>
+        </div>
+        
+        <div class="space-y-4">
+            <a href="{% url 'hod:login' %}" class="btn-primary block w-full py-3 px-4 rounded-lg text-center font-medium transition duration-200">
+                <i class="fas fa-user-shield mr-2"></i> Login as HOD
+            </a>
+            
+            <a href="{% url 'user_portal:home' %}" class="btn-primary block w-full py-3 px-4 rounded-lg text-center font-medium transition duration-200">
+                <i class="fas fa-user-nurse mr-2"></i> Login as Staff
+            </a>
+        </div>
+        
+        <div class="mt-8 text-center text-muted text-sm">
+            <p>Select your role to continue</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
