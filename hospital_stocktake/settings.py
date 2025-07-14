@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-$^ws!)in8ca+#&s&4e(a%falekd!6@1!2@dty_e$oe^sh)6q=%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['corp24-stocktake.onrender.com']
 
 
 # Application definition
