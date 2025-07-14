@@ -80,12 +80,12 @@ WSGI_APPLICATION = 'hospital_stocktake.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hospital_stocktake',
-        'USER': 'phillimon',
-        'PASSWORD': 'Undefeatable@3',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'stocktake'),  # Use 'stocktake' for Render
+        'USER': os.environ.get('DB_USER', 'phillimon'),  # Your Render username
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'CxfGC07YdOHcBavoDTEBG8NiVvx7s6Jf'),  # Your Render password
+        'HOST': os.environ.get('DB_HOST', 'dpg-d1qbf2ripnbc738s76vg-a'),  # Use the Render hostname
+        'PORT': os.environ.get('DB_PORT', '5432'),  # Default PostgreSQL port
     }
 }
 
