@@ -1,5 +1,5 @@
 Django
-psycopg2-binary
+mysqlclient
 pandas
 django-widget-tweaks
 gunicorn
