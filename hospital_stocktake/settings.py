@@ -89,6 +89,17 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME', 'hospital_stocktake'),  # Your database name
+        'USER': os.environ.get('DB_USER', 'phillimon'),        # Your MySQL username
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'Undefeatable@3'), # Your MySQL password
+        'HOST': 'localhost',                                   # The hostname or IP address
+        'PORT': '3306',                                             # Default MySQL port
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
