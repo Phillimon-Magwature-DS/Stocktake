@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', 'hospital_stocktake'),  # Your database name
         'USER': os.environ.get('DB_USER', 'phillimon'),        # Your MySQL username
         'PASSWORD': os.environ.get('DB_PASSWORD', 'Undefeatable@3'), # Your MySQL password
-        'HOST': os.environ.get('DB_HOST', 'local_host'),                                   # The hostname or IP address
+        'HOST': os.environ.get('DB_HOST', 'localhost'),                                   # The hostname or IP address
         'PORT': '3306',                                             # Default MySQL port
     }
 }
